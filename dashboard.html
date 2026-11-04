@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211a16">
+  <meta name="description" content="Central de operações do Varanda do Tempo.">
+  <title>Visão geral | Varanda do Tempo</title>
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module">
+    import { requireAuth } from "./js/guards.js";
+    const profile = await requireAuth(["admin"]);
+    if (profile) {
+      const welcome = document.getElementById("welcome");
+      if (welcome) welcome.textContent = `Olá, ${profile.full_name}. Acompanhe e gerencie a operação do restaurante.`;
+    }
+  </script>
+  <script type="module" src="js/navigation.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-actions"><span class="topbar-context">Painel administrativo</span></div>
+  </header>
+
+  <main class="page dashboard-page" id="dashboardHome">
+    <section class="dashboard-intro" aria-labelledby="dashboardTitle">
+      <div class="dashboard-intro-copy">
+        <span class="eyebrow">PAINEL ADMINISTRATIVO</span>
+        <h1 id="dashboardTitle">Visão geral</h1>
+        <p id="welcome">Validando acesso...</p>
+      </div>
+      <div class="dashboard-intro-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <rect x="7" y="9" width="50" height="46" rx="13" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M19 39V30M27 39V23M35 39V27M43 39V18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M17 46H47" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="dashboard-access" aria-labelledby="dashboardAccessTitle">
+      <div class="dashboard-section-heading">
+        <div>
+          <h2 id="dashboardAccessTitle">Acessos rápidos</h2>
+          <p>Escolha o módulo para continuar sua rotina.</p>
+        </div>
+        <span class="dashboard-module-count">4 módulos</span>
+      </div>
+
+      <div class="dashboard-access-grid">
+        <a class="dashboard-card dashboard-card-featured" href="atendimento.html" aria-label="Abrir Atendimento">
+          <div class="dashboard-card-topline">
+            <span class="dashboard-card-icon dashboard-card-icon-primary" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 8h16l-1.2 11H5.2L4 8Z"/><path d="M8 8a4 4 0 0 1 8 0M8 12h.01M12 12h.01M16 12h.01"/>
+              </svg>
+            </span>
+            <span class="dashboard-card-tag">OPERAÇÃO</span>
+          </div>
+          <div class="dashboard-card-copy">
+            <h3>Atendimento</h3>
+            <p>Abra comandas, localize clientes, lance pedidos e registre pagamentos.</p>
+          </div>
+          <span class="dashboard-card-link">Abrir atendimento <span aria-hidden="true">→</span></span>
+          <span class="dashboard-card-decoration" aria-hidden="true"></span>
+        </a>
+
+        <div class="dashboard-secondary-grid">
+          <a class="dashboard-card dashboard-card-compact" href="comandas.html" aria-label="Abrir gestão de comandas">
+            <span class="dashboard-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="3.5" width="14" height="17" rx="2.2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>
+              </svg>
+            </span>
+            <span class="dashboard-card-copy">
+              <h3>Gestão de comandas</h3>
+              <p>Consulte consumo, pagamentos, histórico e indicadores por período.</p>
+            </span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a class="dashboard-card dashboard-card-compact" href="cardapio.html" aria-label="Abrir gestão do cardápio">
+            <span class="dashboard-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 18V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M8 8h8M8 12h8M8 16h4"/>
+              </svg>
+            </span>
+            <span class="dashboard-card-copy">
+              <h3>Gestão do cardápio</h3>
+              <p>Organize categorias, produtos, preços, imagens e disponibilidade.</p>
+            </span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+          </a>
+
+          <a class="dashboard-card dashboard-card-compact" href="reports.html" aria-label="Abrir relatórios">
+            <span class="dashboard-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19V5M4 19h17"/><path d="m7 15 4-4 3 2 6-7"/><path d="M16 6h4v4"/>
+              </svg>
+            </span>
+            <span class="dashboard-card-copy">
+              <h3>Relatórios</h3>
+              <p>Analise lançamentos, pagamentos e saldos por período.</p>
+            </span>
+            <span class="dashboard-card-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <aside class="dashboard-tip" aria-label="Orientação sobre atualização de preços">
+      <span class="dashboard-tip-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/>
+        </svg>
+      </span>
+      <div>
+        <strong>Importante sobre os preços</strong>
+        <p>Alterações no preço do cardápio valem para novos lançamentos. Itens já registrados em uma comanda preservam o preço da época do pedido.</p>
+      </div>
+      <a href="cardapio.html">Revisar cardápio <span aria-hidden="true">→</span></a>
+    </aside>
+  </main>
+</body>
+</html>

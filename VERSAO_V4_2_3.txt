@@ -1,0 +1,17 @@
+Varanda do Tempo — V4.2.3
+Refinamento Mobile e Atendimento
+
+Base: V4.2.2 Final GitHub Pages
+
+Alterações desta versão:
+- Corrige a contenção dos campos de data na aba Relatórios em telas móveis.
+- Reorganiza o cabeçalho da comanda consultada no Atendimento.
+- Padroniza o selo de situação (Aberta, Encerrada ou Cancelada).
+- Remove o botão e o acionador de impressão do Atendimento.
+- Mantém a impressão de comandas exclusivamente na Gestão de Comandas.
+- Mantém a consulta de itens, resumo financeiro, pagamentos, encerramento e cancelamento de comanda vazia.
+
+Supabase:
+- Nenhuma migration nova.
+- Nenhuma tabela, RPC, regra RLS ou cálculo financeiro alterado.
+- A migration 014 já aplicada permanece no pacote como referência; não executar novamente.

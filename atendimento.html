@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211a16">
+  <title>Atendimento | Varanda do Tempo</title>
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/atendimento.js"></script>
+  <script type="module" src="js/navigation.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-brand">
+        <img class="brand-logo-image" src="assets/logo-varanda-do-tempo.webp" width="1024" height="1024" alt="">
+        <strong>Varanda do Tempo</strong>
+      </div>
+      <div class="topbar-actions">
+        <span class="user-chip" id="userName">Carregando...</span>
+        <button class="btn btn-ghost" id="logoutButton">Sair</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="page-heading attendance-page-heading">
+        <div>
+          <span class="eyebrow">OPERAÇÃO DO RESTAURANTE</span>
+          <h1>Atendimento</h1>
+          <p>Inicie um novo atendimento ou localize uma comanda existente.</p>
+        </div>
+      </div>
+
+      <section class="panel stack attendance-search-panel" id="customerSearchPanel">
+        <div>
+          <div class="attendance-search-heading">
+            <div>
+              <div class="panel-title">Localizar cliente</div>
+              <p class="muted small">Consulte uma comanda existente ou inicie um novo atendimento.</p>
+            </div>
+            <div class="attendance-search-actions">
+              <button class="btn btn-primary" id="startNewAttendanceButton" type="button">
+                <span aria-hidden="true">＋</span> Novo atendimento
+              </button>
+              <button class="btn btn-secondary" id="openOrdersButton" type="button">Comandas abertas</button>
+            </div>
+          </div>
+          <label class="field-label" for="customerName">Cliente da comanda que deseja consultar</label>
+          <div class="search-row">
+            <div class="customer-autocomplete">
+              <input class="field-input" id="customerName" placeholder="Digite o nome do cliente para localizar..." autocomplete="off" aria-autocomplete="list" aria-controls="customerSuggestions">
+              <div class="autocomplete-suggestions" id="customerSuggestions" role="listbox" hidden></div>
+            </div>
+            <button class="btn btn-secondary" id="searchCustomerButton" type="button">Buscar comanda</button>
+          </div>
+          <p class="attendance-helper muted small">Use esta busca para continuar um atendimento já iniciado. Para abrir uma nova comanda, utilize o botão “Novo atendimento”.</p>
+        </div>
+
+        <div id="existingOrdersArea" hidden>
+          <div class="divider"></div>
+          <div class="panel-title" id="existingOrdersTitle">Comandas encontradas</div>
+          <div class="stack" id="openOrdersList"></div>
+
+        </div>
+      </section>
+
+      <section id="activeOrderBox" class="panel attendance-active-order" hidden style="margin-top:18px">
+        <div class="attendance-active-order-layout">
+          <div class="attendance-active-order-main">
+            <div class="muted small">Cliente / comanda ativa</div>
+            <h2 id="activeOrderName"></h2>
+            <div class="muted small" id="activeOrderMeta"></div>
+          </div>
+          <div class="attendance-active-order-side">
+            <span class="order-number attendance-order-status" id="activeOrderNumber" aria-live="polite"></span>
+            <div class="active-order-actions">
+              <button class="btn btn-primary" id="addProductsFromView" type="button" hidden>Adicionar produtos</button>
+              <button class="btn btn-secondary" id="changeOrderButton" type="button">Voltar à consulta</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel order-history-panel attendance-history-panel" id="orderHistoryPanel" hidden style="margin-top:18px">
+        <div class="order-history-heading">
+          <div>
+            <div class="panel-title" style="margin-bottom:4px">Consumo da comanda</div>
+            <p class="muted small">Itens lançados, valores e situação financeira desta comanda.</p>
+          </div>
+          <div class="order-history-summary" id="orderHistorySummary">0 itens</div>
+        </div>
+        <div id="orderHistoryItems" class="order-history-items"></div>
+      </section>
+
+
+      <section class="panel payment-panel attendance-payment-panel" id="paymentPanel" hidden style="margin-top:18px">
+        <div class="payment-heading">
+          <div>
+            <div class="panel-title" id="paymentPanelTitle" style="margin-bottom:4px">Receber pagamento</div>
+            <p class="muted small" id="paymentPanelDescription">Selecione os itens que serão pagos. Itens parcialmente pagos podem ter o saldo restante quitado.</p>
+          </div>
+          <div class="payment-balance">
+            <span class="muted small">Saldo da comanda</span>
+            <strong id="orderBalance">R$ 0,00</strong>
+          </div>
+        </div>
+        <div id="paymentEntryArea">
+        <div id="paymentItemList" class="payment-item-list"></div>
+        <div class="payment-controls payment-controls-featured">
+          <div class="payment-feature-copy">
+            <span class="payment-feature-icon" aria-hidden="true">R$</span>
+            <div>
+              <strong>Recebimento de pagamento</strong>
+              <p class="muted small">Selecione os itens que o cliente vai quitar. O sistema registra o recebimento no histórico.</p>
+            </div>
+          </div>
+          <div class="form-group payment-split-field">
+            <label class="field-label" for="splitCount"><span aria-hidden="true">👥</span> Dividir entre pessoas (opcional)</label>
+            <input class="field-input" id="splitCount" type="number" min="1" max="20" value="1">
+          </div>
+        </div>
+        <div class="payment-summary">
+          <div><span class="muted small">Valor selecionado</span><strong id="selectedPaymentTotal">R$ 0,00</strong></div>
+          <div><span class="muted small">Por pessoa (estimado)</span><strong id="perPersonTotal">R$ 0,00</strong></div>
+        </div>
+        <button class="btn btn-primary btn-block" id="receivePaymentButton" disabled>Registrar pagamento</button>
+        <div class="muted small payment-footnote">O registro é definitivo e será gravado no histórico financeiro da comanda.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="panel-title" style="margin-bottom:8px">Histórico de pagamentos</div>
+        <div id="paymentHistoryList" class="payment-history-list">
+          <div class="empty-note">Nenhum pagamento registrado nesta comanda.</div>
+        </div>
+      </section>
+
+
+      <section class="panel close-order-panel attendance-close-panel" id="closeOrderPanel" hidden style="margin-top:18px">
+        <div class="close-order-content">
+          <div>
+            <div class="panel-title" style="margin-bottom:4px" id="closeOrderTitle">Fechamento da comanda</div>
+            <p class="muted small" id="closeOrderMessage">Quando todos os itens estiverem pagos, você poderá encerrar esta comanda.</p>
+          </div>
+          <div class="close-order-actions" id="closeOrderActions">
+            <div class="close-order-balance" id="closeOrderBalanceBlock">
+              <span class="muted small">Saldo pendente</span>
+              <strong id="closeOrderBalance">R$ 0,00</strong>
+            </div>
+            <button class="btn btn-primary" id="closeOrderButton" disabled><span aria-hidden="true">✓</span> Fechar comanda</button>
+            <button class="btn btn-danger" id="cancelEmptyOrderButton" type="button" hidden><span aria-hidden="true">×</span> Cancelar comanda vazia</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid-two attendance-workspace" id="orderWorkspace" hidden style="margin-top:18px">
+        <div class="panel stack attendance-menu-panel">
+          <div>
+            <div class="attendance-section-heading">
+              <div>
+                <div class="panel-title">Cardápio</div>
+                <p class="muted small">Selecione um produto para adicionar ao pedido.</p>
+              </div>
+              <span class="attendance-section-hint" aria-hidden="true">＋ Adicionar</span>
+            </div>
+            <div class="category-tabs" id="categoryTabs"></div>
+          </div>
+          <div class="product-grid" id="productGrid" aria-live="polite"></div>
+        </div>
+
+        <aside class="panel attendance-cart" style="align-self:start">
+          <div class="attendance-cart-heading">
+            <div>
+              <div class="panel-title">Seu pedido</div>
+              <div class="muted small" id="currentOrderNotice">Os produtos selecionados aparecerão aqui.</div>
+            </div>
+            <span class="attendance-cart-icon" aria-hidden="true">＋</span>
+          </div>
+          <div class="divider"></div>
+          <div id="cartItems" aria-live="polite"></div>
+          <div class="cart-total">
+            <span>Total</span>
+            <span id="cartTotal">R$ 0,00</span>
+          </div>
+          <div class="attendance-cart-count muted small"><span id="cartCount">0</span> unidade(s) selecionada(s)</div>
+          <button class="btn btn-primary btn-block" id="saveOrderButton" type="button" disabled><span aria-hidden="true">✓</span> Lançar na comanda</button>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="closeOrderConfirmModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="closeOrderConfirmTitle">
+      <h2 id="closeOrderConfirmTitle">Encerrar comanda?</h2>
+      <p id="closeOrderConfirmText">Confirme o encerramento desta comanda. Depois disso, novos lançamentos não serão permitidos.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancelCloseOrderButton" type="button">Continuar atendendo</button>
+        <button class="btn btn-primary" id="confirmCloseOrderButton" type="button">Sim, encerrar comanda</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="openOrdersModal" hidden>
+    <section class="modal open-orders-modal" role="dialog" aria-modal="true" aria-labelledby="openOrdersTitle">
+      <div class="modal-heading-row">
+        <div>
+          <h2 id="openOrdersTitle">Comandas abertas</h2>
+          <p class="muted small">Consulte uma comanda pelo nome do cliente ou pelo número.</p>
+        </div>
+        <button class="icon-close" id="closeOpenOrdersModal" type="button" aria-label="Fechar">×</button>
+      </div>
+      <div class="open-orders-toolbar">
+        <input class="field-input" id="openOrdersSearch" aria-label="Buscar comanda aberta por cliente ou número" placeholder="Buscar por cliente ou número..." autocomplete="off">
+        <button class="btn btn-ghost" id="refreshOpenOrdersButton" type="button">Atualizar</button>
+      </div>
+      <p class="open-orders-load-status muted small" id="openOrdersLoadStatus" aria-live="polite" hidden></p>
+      <div id="allOpenOrdersList" class="all-open-orders-list">
+        <div class="loading"><span class="spinner"></span>Carregando comandas...</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="newOrderModal" hidden>
+    <section class="modal new-attendance-modal" role="dialog" aria-modal="true" aria-labelledby="newOrderTitle">
+      <div class="modal-heading-row">
+        <div>
+          <h2 id="newOrderTitle">Iniciar novo atendimento</h2>
+          <p class="muted small">Informe o nome do cliente. Uma nova comanda, com número exclusivo, será criada para registrar o consumo.</p>
+        </div>
+        <button class="icon-close" id="closeNewOrderModalButton" type="button" aria-label="Fechar">×</button>
+      </div>
+      <div class="form-group new-attendance-name-field">
+        <label class="field-label" for="newCustomerNameInput">Nome do cliente</label>
+        <input class="field-input" id="newCustomerNameInput" maxlength="100" autocomplete="off" placeholder="Ex.: Lucas Almeida" required>
+        <small class="muted">Se já existir uma comanda aberta com esse nome, vamos pedir uma identificação adicional para evitar confusão.</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancelNewOrderButton" type="button">Cancelar</button>
+        <button class="btn btn-primary" id="confirmNewOrderButton" type="button">Iniciar atendimento</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="duplicateNameModal" hidden>
+    <section class="modal duplicate-name-modal" role="dialog" aria-modal="true" aria-labelledby="duplicateNameTitle">
+      <div class="duplicate-warning">
+        <span class="duplicate-warning-icon">!</span>
+        <div>
+          <h2 id="duplicateNameTitle">Já existe cliente com esse nome</h2>
+          <p id="duplicateNameMessage">Encontramos uma comanda aberta com esse nome. Para diferenciar clientes com nomes iguais, informe o sobrenome ou apelido.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="field-label" for="distinctCustomerName">Nome completo, sobrenome ou apelido</label>
+        <input class="field-input" id="distinctCustomerName" maxlength="100" placeholder="Ex.: Joyce Silva">
+        <small class="muted">Exemplo: Joyce → Joyce Silva ou Joyce (apelido).</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancelDuplicateNameButton" type="button">Cancelar</button>
+        <button class="btn btn-primary" id="confirmDuplicateNameButton" type="button">Continuar com esse nome</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="confirmExistingModal" hidden>
+    <section class="modal">
+      <h2>Confirmar comanda</h2>
+      <p id="confirmExistingText"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="cancelExistingButton">Voltar</button>
+        <button class="btn btn-primary" id="confirmExistingButton">Abrir comanda</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

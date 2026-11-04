@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211a16">
+  <meta name="description" content="Relatórios de consumo e pagamentos do Varanda do Tempo.">
+  <title>Relatórios | Varanda do Tempo</title>
+  <link rel="icon" href="assets/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/reports.js"></script>
+  <script type="module" src="js/navigation.js"></script>
+  <script type="module" src="js/utils.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand"><img class="brand-logo-image" src="assets/logo-varanda-do-tempo.webp" width="1024" height="1024" alt=""><strong>Varanda do Tempo</strong></div>
+    <div class="topbar-actions">
+      <span class="user-chip" id="userName"></span>
+      <a class="btn btn-ghost" href="dashboard.html" style="text-decoration:none">Painel</a>
+      <button class="btn btn-ghost" id="logoutButton" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="page reports-page">
+    <section class="page-heading reports-page-heading">
+      <div>
+        <span class="eyebrow">GESTÃO E ANÁLISE</span>
+        <h1>Relatórios</h1>
+        <p>Consulte os lançamentos do cardápio e acompanhe os valores pagos e pendentes.</p>
+      </div>
+    </section>
+
+    <section class="panel reports-filter-panel" aria-labelledby="reportsFiltersTitle">
+      <div class="reports-section-heading">
+        <div>
+          <h2 id="reportsFiltersTitle">Filtrar relatório</h2>
+          <p class="muted small">Escolha o período e, se desejar, uma situação de pagamento.</p>
+        </div>
+        <span class="reports-filter-hint">Período obrigatório</span>
+      </div>
+      <form id="reportFiltersForm" class="reports-filters" novalidate>
+        <div class="form-group">
+          <label for="reportDateFrom">De</label>
+          <div class="reports-date-control">
+            <input class="field-input" id="reportDateFrom" name="dateFrom" type="date" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reportDateTo">Até</label>
+          <div class="reports-date-control">
+            <input class="field-input" id="reportDateTo" name="dateTo" type="date" required>
+          </div>
+        </div>
+        <div class="form-group reports-status-field">
+          <label for="reportStatus">Status</label>
+          <select class="field-select" id="reportStatus" name="status">
+            <option value="all">Todos</option>
+            <option value="paid">Pago</option>
+            <option value="pending">Pendente</option>
+            <option value="partially_paid">Parcialmente pago</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
+        </div>
+        <div class="reports-filter-actions">
+          <button class="btn btn-primary" id="applyReportFilters" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M7 12h10m-7 7h4"/></svg>
+            Filtrar relatório
+          </button>
+          <button class="btn btn-secondary" id="clearReportFilters" type="button">Limpar</button>
+        </div>
+      </form>
+      <p class="reports-period-note">A data considera o momento em que cada produto foi lançado na comanda. Os valores pagos são calculados pelos recebimentos vinculados aos itens.</p>
+    </section>
+
+    <section class="reports-kpi-grid" aria-label="Resumo financeiro do período" aria-live="polite">
+      <article class="reports-kpi reports-kpi-paid">
+        <div class="reports-kpi-topline">
+          <span class="reports-kpi-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 7.5h16v11H4zM4 10h16M8 15h3"/><path d="m8 4 2 2 4-3"/></svg>
+          </span>
+          <span class="reports-kpi-label">Total pago</span>
+        </div>
+        <strong class="reports-kpi-amount" id="reportTotalPaid">R$ 0,00</strong>
+        <div class="reports-kpi-count"><strong id="reportPaidCount">0</strong><span>lançamentos com valor recebido</span></div>
+      </article>
+      <article class="reports-kpi reports-kpi-pending">
+        <div class="reports-kpi-topline">
+          <span class="reports-kpi-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2M8 3 5 5M16 3l3 2"/></svg>
+          </span>
+          <span class="reports-kpi-label">Total pendente</span>
+        </div>
+        <strong class="reports-kpi-amount" id="reportTotalPending">R$ 0,00</strong>
+        <div class="reports-kpi-count"><strong id="reportPendingCount">0</strong><span>lançamentos com saldo pendente</span></div>
+      </article>
+    </section>
+    <p class="reports-count-note">Um lançamento parcialmente pago pode ser contabilizado nos dois contadores. Itens cancelados aparecem na tabela, mas não compõem os valores pagos ou pendentes.</p>
+
+    <section class="panel reports-table-panel" aria-labelledby="reportTableTitle">
+      <div class="reports-section-heading reports-table-heading">
+        <div>
+          <h2 id="reportTableTitle">Detalhamento dos lançamentos</h2>
+          <p class="muted small" id="reportResultsLabel" aria-live="polite">Aplique um período para visualizar os lançamentos.</p>
+        </div>
+        <span class="reports-table-context" id="reportPeriodLabel">Nenhum período selecionado</span>
+      </div>
+      <div class="reports-table-wrap">
+        <table class="reports-table">
+          <thead>
+            <tr>
+              <th scope="col">Data/hora</th>
+              <th scope="col">Cliente / comanda</th>
+              <th scope="col">Produto</th>
+              <th scope="col" class="reports-number-cell">Qtd.</th>
+              <th scope="col" class="reports-number-cell">Preço unitário</th>
+              <th scope="col" class="reports-number-cell">Preço total</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody">
+            <tr><td class="reports-table-empty" colspan="7">Informe as datas inicial e final e clique em “Filtrar relatório”.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="reports-pagination" id="reportPagination" hidden>
+        <span class="reports-pagination-info" id="reportPaginationInfo"></span>
+        <div class="reports-pagination-actions">
+          <button class="btn btn-secondary btn-compact" id="reportPrevPage" type="button" disabled>Anterior</button>
+          <button class="btn btn-secondary btn-compact" id="reportNextPage" type="button" disabled>Próxima</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+</body>
+</html>

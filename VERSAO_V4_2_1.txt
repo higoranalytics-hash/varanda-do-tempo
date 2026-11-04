@@ -1,0 +1,8 @@
+VARANDA DO TEMPO — V4.2.1 | AUDITORIA FINAL
+
+Auditoria estática e visual responsiva dos seis módulos, otimização do logo para WebP,
+carregamento de fontes sem @import, ajustes de contraste WCAG em botões principais
+e de pagamento, e nomes acessíveis para campos auxiliares.
+
+Nenhuma lógica de negócio, RPC, regra financeira, autenticação, RLS ou migration foi alterada.
+A migration 014 já foi aplicada e confirmada no Supabase do projeto.

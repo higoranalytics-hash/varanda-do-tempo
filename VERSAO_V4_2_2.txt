@@ -1,0 +1,14 @@
+Varanda do Tempo — V4.2.2
+Refinamento mobile e cancelamento de comanda vazia no Atendimento.
+Base: V4.2.1 Final GitHub Pages.
+
+Alterações:
+- Modal de comandas abertas mais compacto e com rolagem interna adequada em celulares.
+- Ações dos cards de comandas não ocupam mais toda a largura quando há somente uma ação.
+- Campos de data dos Relatórios limitados à largura do card em navegadores móveis.
+- Botão Voltar deixa de sobrepor o comprovante e o conteúdo em telas pequenas.
+- Consulta de comanda vazia no Atendimento passa a exibir Cancelar comanda vazia.
+- A ação reutiliza cancel_empty_customer_order e a confirmação existente; a RPC continua validando itens ativos e pagamentos no backend.
+- A ação some quando há itens no carrinho, reaparecendo apenas quando o carrinho volta a ficar vazio.
+
+Não foram alteradas tabelas, RPCs, migrations, políticas RLS ou regras financeiras.
